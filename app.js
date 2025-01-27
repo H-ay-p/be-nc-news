@@ -14,14 +14,8 @@ app.get("/api", (req, res) => {
 
 app.get("/api/topics", getTopics);
 
-app.get("/api/*");
-
-app.use((err, req, res, next) => {
-  console.log("in the err");
-  console.log(err.status);
-  if (err.status === 404) {
-    res.status(404).send({ msg: "Bad request" });
-  }
+app.all("/*", (req, res) => {
+  res.status(404).send({ message: "Not found!" });
 });
 
 module.exports = app;

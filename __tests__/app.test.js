@@ -8,6 +8,18 @@ const connection = require("../db/connection.js");
 
 afterAll(() => connection.end());
 
+describe("Bad urls", () => {
+  test("GET:404 if path is invalid/mispelt", () => {
+    return request(app)
+      .get("/api/notValid")
+      .expect(404)
+      .then((response) => {
+        expect(response.status).toBe(404);
+        expect(response.body.message).toBe("Not found!");
+      });
+  });
+});
+
 describe("GET /api/healthcheck", () => {
   test("should run a heath check", () => {
     return request(app)
@@ -43,16 +55,6 @@ describe("GET api/topics", () => {
           slug: "cats",
           description: "Not dogs",
         });
-      });
-  });
-  //I KNOW THIS IS NOT GOOD MY MIND IS BLANK BUT ICAN'T FIGURE OUT WHAT TASK WANTS IF NOT THIS
-  test("GET:404 if path is invalid/mispelt", () => {
-    return request(app)
-      .get("/api/topicss")
-      .expect(404)
-      .then((response) => {
-        console.log(response.status);
-        expect(response.status).toBe(404);
       });
   });
 });
