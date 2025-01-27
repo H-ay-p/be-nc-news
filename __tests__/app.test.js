@@ -29,3 +29,20 @@ describe("GET /api", () => {
       });
   });
 });
+
+describe("GET api/topics", () => {
+  test("200: an array of topic objects, each of which should have the following properties: slug, description", () => {
+    return request(app)
+      .get("/api/topics")
+      .expect(200)
+      .then((response) => {
+        expect(response.status).toBe(200);
+        expect(Array.isArray(response.body));
+        expect(response.body.length).toBe(3);
+        expect(response.body[1]).toEqual({
+          slug: "cats",
+          description: "Not dogs",
+        });
+      });
+  });
+});
