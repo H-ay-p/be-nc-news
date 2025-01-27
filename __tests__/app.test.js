@@ -45,4 +45,14 @@ describe("GET api/topics", () => {
         });
       });
   });
+  //I KNOW THIS IS NOT GOOD MY MIND IS BLANK BUT ICAN'T FIGURE OUT WHAT TASK WANTS IF NOT THIS
+  test("GET:404 if path is invalid/mispelt", () => {
+    return request(app)
+      .get("/api/topicss")
+      .expect(404)
+      .then((response) => {
+        console.log(response.status);
+        expect(response.status).toBe(404);
+      });
+  });
 });
