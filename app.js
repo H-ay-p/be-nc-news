@@ -21,4 +21,19 @@ app.all("/*", (req, res) => {
   res.status(404).send({ message: "Not found!" });
 });
 
+app.use((err, req, res, next) => {
+  if (err.message === "article not found") {
+    res.status(404).send({ message: "article not found" });
+  } else {
+    next(err);
+  }
+});
+
+app.use((err, req, res, next) => {
+  if (err.code === "22P02") {
+    res.status(400).send({ message: "Parameter not valid" });
+  } else {
+    next(err);
+  }
+});
 module.exports = app;

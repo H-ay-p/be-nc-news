@@ -6,4 +6,6 @@
 
 3. /api/topics endpoint - returns an array of topics
 
+4. /api/articles/:article_id - returns an article object with the specified id
+
 This portfolio project was created as part of a Digital Skills Bootcamp in Software Engineering provided by [Northcoders](https://northcoders.com/)

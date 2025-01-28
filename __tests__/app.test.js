@@ -3,6 +3,7 @@ const endpointsJson = require("../endpoints.json");
 const request = require("supertest");
 const app = require("../app.js");
 const connection = require("../db/connection.js");
+// const runseed = require("../db/seeds/run-seed.js");
 
 /* Set up your beforeEach & afterAll functions here */
 
@@ -59,7 +60,7 @@ describe("GET api/topics", () => {
   });
 });
 
-describe.only("GET /api/articles/:article_id", () => {
+describe("GET /api/articles/:article_id", () => {
   test("200: responds with: an article object, which should have the following properties: author, title, article_id, body, topic, created_at, votes, article_img_url", () => {
     return request(app)
       .get("/api/articles/4")
@@ -69,6 +70,24 @@ describe.only("GET /api/articles/:article_id", () => {
         expect(response.body).toHaveProperty("title");
         expect(response.body).toHaveProperty("votes");
         expect(response.body).toHaveProperty("created_at");
+      });
+  });
+  test("404 when there is no article with given id", () => {
+    return request(app)
+      .get("/api/articles/3409")
+      .expect(404)
+      .then((response) => {
+        expect(response.status).toBe(404);
+        expect(response.body.message).toBe("article not found");
+      });
+  });
+  test.only("400 when the thing provided is not an id", () => {
+    return request(app)
+      .get("/api/articles/ImNotAnId")
+      .expect(400)
+      .then((response) => {
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Parameter not valid");
       });
   });
 });
