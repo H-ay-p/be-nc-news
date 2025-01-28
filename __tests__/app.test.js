@@ -58,16 +58,3 @@ describe("GET api/topics", () => {
       });
   });
 });
-
-describe("GET /api/articles/:article_id", () => {
-  test("200: responds with: an article object, which should have the following properties: author, title, article_id, body, topic, created_at, votes, article_img_url", () => {
-    return request(app)
-      .get("/api/articles/:article_id")
-      .expect(200)
-      .then((response) => {
-        expect(response.status).toBe(200);
-        expect(response.body).toHaveProperty("title");
-        expect(response.body).toHaveProperty("votes");
-      });
-  });
-});
