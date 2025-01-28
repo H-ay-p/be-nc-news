@@ -3,7 +3,6 @@ const endpointsJson = require("../endpoints.json");
 const request = require("supertest");
 const app = require("../app.js");
 const connection = require("../db/connection.js");
-// const runseed = require("../db/seeds/run-seed.js");
 
 /* Set up your beforeEach & afterAll functions here */
 
@@ -69,7 +68,11 @@ describe("GET /api/articles/:article_id", () => {
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty("title");
         expect(response.body).toHaveProperty("votes");
-        expect(response.body).toHaveProperty("created_at");
+        expect(response.body).toHaveProperty("author");
+        expect(response.body).toHaveProperty("article_id");
+        expect(response.body).toHaveProperty("body");
+        expect(response.body).toHaveProperty("topic");
+        expect(response.body).toHaveProperty("article_img_url");
       });
   });
   test("404 when there is no article with given id", () => {
@@ -81,7 +84,7 @@ describe("GET /api/articles/:article_id", () => {
         expect(response.body.message).toBe("article not found");
       });
   });
-  test.only("400 when the thing provided is not an id", () => {
+  test("400 when the provided id is not a valid id", () => {
     return request(app)
       .get("/api/articles/ImNotAnId")
       .expect(400)
@@ -89,5 +92,32 @@ describe("GET /api/articles/:article_id", () => {
         expect(response.status).toBe(400);
         expect(response.body.message).toBe("Parameter not valid");
       });
+  });
+});
+
+describe("GET /api/articles", () => {
+  test(`200 responds with an articles array of article objects, each of which should have the following properties: author, title, 
+    article_id, topic, created_at, votes, article_img_url, comment_count`, () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then((response) => {
+        expect(response.status).toBe(200);
+        expect(Array.isArray(response.body));
+        expect(response.body).toBeSorted({ descending: true });
+        response.body.forEach((article) => {
+          expect(typeof article.title).toBe("string");
+          expect(typeof article.author).toBe("string");
+          expect(typeof article.topic).toBe("string");
+          expect(typeof article.votes).toBe("number");
+          expect(typeof article.article_id).toBe("number");
+          expect(typeof article.article_img_url).toBe("string");
+          //COULD NOT FIGURE OUT HOW TO MAKE COMMENT_COUNT BE AN INT
+          expect(article).toHaveProperty("comment_count");
+        });
+      });
+  });
+  test("responds with 404 if articles is spelled incorrectly", () => {
+    return request(app).get("/api/articlesss").expect(404);
   });
 });

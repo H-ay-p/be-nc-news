@@ -8,4 +8,6 @@
 
 4. /api/articles/:article_id - returns an article object with the specified id
 
+5. /api/articles - returns an array of all articles
+
 This portfolio project was created as part of a Digital Skills Bootcamp in Software Engineering provided by [Northcoders](https://northcoders.com/)
