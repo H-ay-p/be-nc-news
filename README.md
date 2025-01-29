@@ -14,4 +14,6 @@
 
 7. POST /api/articles/:article_id/comments - posts a new comment
 
+8. PATCH /api/articles/:article_id - updates the number of votes for an article
+
 This portfolio project was created as part of a Digital Skills Bootcamp in Software Engineering provided by [Northcoders](https://northcoders.com/)

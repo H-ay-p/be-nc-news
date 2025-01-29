@@ -25,4 +25,19 @@ const fetchArticles = () => {
   });
 };
 
-module.exports = { fetchArticleById, fetchArticles };
+const updateVotes = (voteInc, id) => {
+  return db
+    .query(
+      `UPDATE articles SET votes=votes+$1 WHERE article_id=$2 RETURNING *;`,
+      [voteInc, id]
+    )
+    .then((response) => {
+      if (response.rows.length === 0) {
+        return Promise.reject({ message: "Bad Request" });
+      } else {
+        return response.rows[0];
+      }
+    });
+};
+
+module.exports = { fetchArticleById, fetchArticles, updateVotes };
