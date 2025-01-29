@@ -152,12 +152,54 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect(response.body.message).toBe("no comments :(");
       });
   });
-  test("400: Responds with a Parameter not valid when given an invlid id", () => {
+  test("400: Responds with a Parameter not valid when given an invalid id", () => {
     return request(app)
       .get("/api/articles/notAnId/comments")
       .expect(400)
       .then((response) => {
         expect(response.body.message).toBe("Parameter not valid");
+      });
+  });
+});
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("201: Responds with the posted comment", () => {
+    return request(app)
+      .post("/api/articles/5/comments")
+      .send({
+        username: "lurker",
+        body: "this was so shocking i had to stop lurking",
+      })
+      .expect(201)
+      .then((response) => {
+        expect(response.body).toEqual({
+          article_id: "5",
+          body: "this was so shocking i had to stop lurking",
+          username: "lurker",
+        });
+      });
+  });
+  test("400 missing keys", () => {
+    return request(app)
+      .post("/api/articles/5/comments")
+      .send({
+        username: "lurker",
+      })
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe("Bad Request");
+      });
+  });
+  test("400 invalid user/user cannot post", () => {
+    return request(app)
+      .post("/api/articles/5/comments")
+      .send({
+        username: "duck",
+        body: "got any grapes?",
+      })
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe("Bad Request - no user found");
       });
   });
 });
