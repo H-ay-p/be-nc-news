@@ -93,7 +93,7 @@ describe("GET /api/articles/:article_id", () => {
       .expect(400)
       .then((response) => {
         expect(response.status).toBe(400);
-        expect(response.body.message).toBe("Parameter not valid");
+        expect(response.body.message).toBe("Bad Request");
       });
   });
 });
@@ -157,7 +157,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       .get("/api/articles/notAnId/comments")
       .expect(400)
       .then((response) => {
-        expect(response.body.message).toBe("Parameter not valid");
+        expect(response.body.message).toBe("Bad Request");
       });
   });
 });
@@ -200,6 +200,63 @@ describe("POST /api/articles/:article_id/comments", () => {
       .expect(400)
       .then((response) => {
         expect(response.body.message).toBe("Bad Request - no user found");
+      });
+  });
+});
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("200: responds with updated article", () => {
+    return request(app)
+      .patch("/api/articles/5")
+      .send({
+        incVotes: 2,
+      })
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual({
+          article_id: 5,
+          title: "UNCOVERED: catspiracy to bring down democracy",
+          topic: "cats",
+          author: "rogersop",
+          body: "Bastet walks amongst us, and the cats are taking arms!",
+          created_at: "2020-08-03T13:14:00.000Z",
+          votes: 2,
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        });
+      });
+  });
+  test("400: responds with error message if votes is not an integer", () => {
+    return request(app)
+      .patch("/api/articles/5")
+      .send({
+        incVotes: "a",
+      })
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe("Bad Request");
+      });
+  });
+  test("400: responds with error message if no article with that id (but id is valid)", () => {
+    return request(app)
+      .patch("/api/articles/50")
+      .send({
+        incVotes: 2,
+      })
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe("Bad Request");
+      });
+  });
+  test("404: responds with error message if id is not a valid id", () => {
+    return request(app)
+      .patch("/api/articles/notAnId")
+      .send({
+        incVotes: 2,
+      })
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe("Bad Request");
       });
   });
 });

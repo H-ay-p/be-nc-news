@@ -9,6 +9,7 @@ const {
 const {
   getArticlesById,
   getArticles,
+  patchVotes,
 } = require("./controllers/articlesControllers.js");
 
 const app = express();
@@ -34,6 +35,8 @@ app.get("/api/articles/:article_id/comments", getComments);
 
 app.post("/api/articles/:article_id/comments", postComment);
 
+app.patch("/api/articles/:article_id", patchVotes);
+
 app.all("/*", (req, res) => {
   res.status(404).send({ message: "Not found!" });
 });
@@ -48,7 +51,7 @@ app.use((err, req, res, next) => {
 
 app.use((err, req, res, next) => {
   if (err.code === "22P02") {
-    res.status(400).send({ message: "Parameter not valid" });
+    res.status(400).send({ message: "Bad Request" });
   } else {
     next(err);
   }
@@ -81,6 +84,14 @@ app.use((err, req, res, next) => {
 app.use((err, req, res, next) => {
   if (err.code === "23503") {
     res.status(400).send({ message: "Bad Request - no user found" });
+  } else {
+    next(err);
+  }
+});
+
+app.use((err, req, res, next) => {
+  if (err.message === "Bad Request") {
+    res.status(400).send({ message: "Bad Request" });
   } else {
     next(err);
   }
