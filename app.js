@@ -5,6 +5,7 @@ const getTopics = require("./controllers/topicsController.js");
 const {
   getComments,
   postComment,
+  deleteComment,
 } = require("./controllers/commentsController.js");
 const {
   getArticlesById,
@@ -36,6 +37,8 @@ app.get("/api/articles/:article_id/comments", getComments);
 app.post("/api/articles/:article_id/comments", postComment);
 
 app.patch("/api/articles/:article_id", patchVotes);
+
+app.delete("/api/comments/:comment_id", deleteComment);
 
 app.all("/*", (req, res) => {
   res.status(404).send({ message: "Not found!" });
@@ -92,6 +95,14 @@ app.use((err, req, res, next) => {
 app.use((err, req, res, next) => {
   if (err.message === "Bad Request") {
     res.status(400).send({ message: "Bad Request" });
+  } else {
+    next(err);
+  }
+});
+
+app.use((err, req, res, next) => {
+  if (err.message === "no comment with this id") {
+    res.status(404).send({ message: "no comment with this id" });
   } else {
     next(err);
   }
