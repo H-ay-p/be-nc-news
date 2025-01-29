@@ -128,16 +128,18 @@ describe("GET /api/articles", () => {
 describe("GET /api/articles/:article_id/comments", () => {
   test("200: Responds with an array of comments for the given article_id when comments are present for that article_id", () => {
     return request(app)
-      .get("/api/articles/1/comments")
+      .get("/api/articles/5/comments")
       .expect(200)
       .then((response) => {
         expect(Array.isArray(response.body));
+        expect(response.body).toBeSorted({ descending: true });
+        expect(response.body.length).toBe(2);
         response.body.forEach((comment) => {
           expect(typeof comment.comment_id).toBe("number");
           expect(typeof comment.author).toBe("string");
           expect(typeof comment.body).toBe("string");
           expect(typeof comment.votes).toBe("number");
-          expect(comment.article_id).toBe(1);
+          expect(comment.article_id).toBe(5);
           expect(comment.created_at.slice(0, 4)).toBe("2020");
         });
       });
