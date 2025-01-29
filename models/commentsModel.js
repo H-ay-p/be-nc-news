@@ -26,7 +26,7 @@ const addComment = (newComment, id) => {
       [body, username, article_id]
     )
     .then(({ rows }) => {
-      return rows;
+      return rows[0];
     });
 };
 

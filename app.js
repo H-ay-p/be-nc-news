@@ -64,8 +64,7 @@ app.use((err, req, res, next) => {
 
 app.use((err, req, res, next) => {
   if (err.code === "23502") {
-    // res.status(400).send({ message: "Bad Request" });
-    res.status(400).send("Bad Request");
+    res.status(400).send({ message: "Bad Request" });
   } else {
     next(err);
   }
@@ -73,8 +72,7 @@ app.use((err, req, res, next) => {
 
 app.use((err, req, res, next) => {
   if (err.code === "ERR_HTTP_INVALID_STATUS_CODE") {
-    // res.status(400).send({ message: "Bad Request" });
-    res.status(400).send("Bad Request - incorrect data types");
+    res.status(400).send({ message: "Bad Request" });
   } else {
     next(err);
   }
@@ -82,8 +80,7 @@ app.use((err, req, res, next) => {
 
 app.use((err, req, res, next) => {
   if (err.code === "23503") {
-    // res.status(400).send({ message: "Bad Request" });
-    res.status(400).send("Bad Request - no user found");
+    res.status(400).send({ message: "Bad Request - no user found" });
   } else {
     next(err);
   }

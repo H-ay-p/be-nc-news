@@ -17,7 +17,7 @@ const postComment = (req, res, next) => {
 
   addComment(newComment, article_id)
     .then(() => {
-      res.status(201).send(newComment.body);
+      res.status(201).send(newComment);
     })
     .catch((err) => {
       next(err);
@@ -25,10 +25,3 @@ const postComment = (req, res, next) => {
 };
 
 module.exports = { getComments, postComment };
-
-// comment_id
-// votes
-// created_at
-// author
-// body
-// article_id
