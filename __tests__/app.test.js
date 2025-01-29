@@ -152,12 +152,66 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect(response.body.message).toBe("no comments :(");
       });
   });
-  test("400: Responds with a Parameter not valid when given an invlid id", () => {
+  test("400: Responds with a Parameter not valid when given an invalid id", () => {
     return request(app)
       .get("/api/articles/notAnId/comments")
       .expect(400)
       .then((response) => {
         expect(response.body.message).toBe("Parameter not valid");
+      });
+  });
+});
+
+describe.only("POST /api/articles/:article_id/comments", () => {
+  test("201: Responds with the posted comment", () => {
+    return request(app)
+      .post("/api/articles/5/comments")
+      .send({
+        username: "lurker",
+        body: "this was so shocking i had to stop lurking",
+      })
+      .expect(201)
+      .then((response) => {
+        //I EXPECTED THIS TO BE RESPONSE.BODY, NOT RESPONSE.TEXT, BUT RESPONSE.BODY IS EMPTY. NOT SURE IF THAT MEANS I DID SOMETHING WRONG OR HOW TO CHANGE THAT?
+        expect(response.text).toBe(
+          "this was so shocking i had to stop lurking"
+        );
+      });
+  });
+  test("400 missing keys", () => {
+    return request(app)
+      .post("/api/articles/5/comments")
+      .send({
+        username: "lurker",
+      })
+      .expect(400)
+      .then((response) => {
+        //NOTE - COULD NOT GET ERROR MESSAGE TO SEND AS OBJECT. ALWAYS ARRIVES AS STRING.
+        expect(response.text).toBe("Bad Request");
+      });
+  });
+  test("400 incorrect data types", () => {
+    return request(app)
+      .post("/api/articles/5/comments")
+      .send({
+        username: "lurker",
+        body: 12345,
+      })
+      .expect(400)
+      .then((response) => {
+        expect(response.text).toBe("Bad Request - incorrect data types");
+      });
+  });
+  test("400 invalid user/user cannot post", () => {
+    return request(app)
+      .post("/api/articles/5/comments")
+      .send({
+        username: "duck",
+        body: "got any grapes?",
+      })
+      .expect(400)
+      .then((response) => {
+        expect(response.text).toBe("Bad Request - no user found");
       });
   });
 });

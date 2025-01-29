@@ -15,4 +15,19 @@ const fetchComments = (id) => {
     });
 };
 
-module.exports = fetchComments;
+const addComment = (newComment, id) => {
+  newComment.article_id = id;
+
+  const { body, username, article_id } = newComment;
+
+  return db
+    .query(
+      `INSERT INTO comments (body, author, article_id) VALUES ($1, $2, $3) RETURNING *;`,
+      [body, username, article_id]
+    )
+    .then(({ rows }) => {
+      return rows;
+    });
+};
+
+module.exports = { fetchComments, addComment };
