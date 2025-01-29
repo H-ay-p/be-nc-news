@@ -10,4 +10,6 @@
 
 5. /api/articles - returns an array of all articles
 
+6. /api/articles/:article_id/comments - returns comments for given article
+
 This portfolio project was created as part of a Digital Skills Bootcamp in Software Engineering provided by [Northcoders](https://northcoders.com/)

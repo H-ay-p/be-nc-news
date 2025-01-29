@@ -1,10 +1,13 @@
 const endpointsJson = require("../endpoints.json");
-/* Set up your test imports here */
+const testData = require("../db/data/test-data/index.js");
+const seed = require("../db/seeds/seed.js");
 const request = require("supertest");
 const app = require("../app.js");
 const connection = require("../db/connection.js");
 
 /* Set up your beforeEach & afterAll functions here */
+
+beforeEach(() => seed(testData));
 
 afterAll(() => connection.end());
 
@@ -119,5 +122,42 @@ describe("GET /api/articles", () => {
   });
   test("responds with 404 if articles is spelled incorrectly", () => {
     return request(app).get("/api/articlesss").expect(404);
+  });
+});
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("200: Responds with an array of comments for the given article_id when comments are present for that article_id", () => {
+    return request(app)
+      .get("/api/articles/5/comments")
+      .expect(200)
+      .then((response) => {
+        expect(Array.isArray(response.body));
+        expect(response.body).toBeSorted({ descending: true });
+        expect(response.body.length).toBe(2);
+        response.body.forEach((comment) => {
+          expect(typeof comment.comment_id).toBe("number");
+          expect(typeof comment.author).toBe("string");
+          expect(typeof comment.body).toBe("string");
+          expect(typeof comment.votes).toBe("number");
+          expect(comment.article_id).toBe(5);
+          expect(comment.created_at.slice(0, 4)).toBe("2020");
+        });
+      });
+  });
+  test("404: Responds with a sad message when no comments are present for that id", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.message).toBe("no comments :(");
+      });
+  });
+  test("400: Responds with a Parameter not valid when given an invlid id", () => {
+    return request(app)
+      .get("/api/articles/notAnId/comments")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe("Parameter not valid");
+      });
   });
 });
