@@ -260,3 +260,28 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 });
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: deletes a comment, status 204, no response", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(() => {});
+  });
+  test("404: no comment with that id (id is valid)", () => {
+    return request(app)
+      .delete("/api/comments/568")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.message).toBe("no comment with this id");
+      });
+  });
+  test("400: no comment with that id (id is not valid)", () => {
+    return request(app)
+      .delete("/api/comments/notAnId")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe("Bad Request");
+      });
+  });
+});
