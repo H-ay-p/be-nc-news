@@ -3,13 +3,13 @@ const testData = require("../db/data/test-data/index.js");
 const seed = require("../db/seeds/seed.js");
 const request = require("supertest");
 const app = require("../app.js");
-const connection = require("../db/connection.js");
+const db = require("../db/connection.js");
 
 /* Set up your beforeEach & afterAll functions here */
 
 beforeEach(() => seed(testData));
 
-afterAll(() => connection.end());
+afterAll(() => db.end());
 
 describe("Bad urls", () => {
   test("GET:404 if path is invalid/mispelt", () => {
@@ -261,12 +261,18 @@ describe("PATCH /api/articles/:article_id", () => {
   });
 });
 
-describe("DELETE /api/comments/:comment_id", () => {
+describe.only("DELETE /api/comments/:comment_id", () => {
   test("204: deletes a comment, status 204, no response", () => {
     return request(app)
       .delete("/api/comments/1")
       .expect(204)
-      .then(() => {});
+      .then(() => {
+        db.query(`SELECT comment_id FROM comments;`).then((response) => {
+          response.rows.forEach((comment) => {
+            expect(comment.comment_id).not.toBe(1);
+          });
+        });
+      });
   });
   test("404: no comment with that id (id is valid)", () => {
     return request(app)
