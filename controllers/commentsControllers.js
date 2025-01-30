@@ -24,7 +24,14 @@ const postComment = (req, res, next) => {
       res.status(201).send(newComment);
     })
     .catch((err) => {
-      next(err);
+      if (
+        err.detail &&
+        err.detail.slice(0, 42) === "Failing row contains (19, null, 2, null, 0"
+      ) {
+        res.status(404).send({ message: "no article for this id :(" });
+      } else {
+        next(err);
+      }
     });
 };
 

@@ -152,7 +152,7 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect(response.body.message).toBe("no comments :(");
       });
   });
-  test("400: Responds with a Parameter not valid when given an invalid id", () => {
+  test("400: Responds with Bad Request when given an invalid id", () => {
     return request(app)
       .get("/api/articles/notAnId/comments")
       .expect(400)
@@ -200,6 +200,22 @@ describe("POST /api/articles/:article_id/comments", () => {
       .expect(400)
       .then((response) => {
         expect(response.body.message).toBe("Bad Request - no user found");
+      });
+  });
+  test("404: Responds with a sad message when no article is present for that id", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.message).toBe("no article for this id :(");
+      });
+  });
+  test("400: Responds with Bad Request when given an invalid id", () => {
+    return request(app)
+      .post("/api/articles/notAnId/comments")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe("Bad Request");
       });
   });
 });
