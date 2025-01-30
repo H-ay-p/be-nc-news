@@ -261,7 +261,7 @@ describe("PATCH /api/articles/:article_id", () => {
   });
 });
 
-describe.only("DELETE /api/comments/:comment_id", () => {
+describe("DELETE /api/comments/:comment_id", () => {
   test("204: deletes a comment, status 204, no response", () => {
     return request(app)
       .delete("/api/comments/1")
@@ -288,6 +288,39 @@ describe.only("DELETE /api/comments/:comment_id", () => {
       .expect(400)
       .then((response) => {
         expect(response.body.message).toBe("Bad Request");
+      });
+  });
+});
+
+describe("GET /api/users", () => {
+  test("responds with an array of objects, each object should have the following properties: username, name, avatar_url", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then((response) => {
+        const users = response.body;
+        expect(users.length).toBe(4);
+        expect(Array.isArray(users));
+        users.forEach((user) => {
+          expect(user).toHaveProperty("username");
+          expect(user).toHaveProperty("name");
+          expect(user).toHaveProperty("avatar_url");
+        });
+      });
+  });
+
+  //NOTE - I KNOW THAT THIS TEST IS UNNECCESSARY AS BAD URLS ARE ALREADY COVERED. HOWEVER, THE QUESTION STATES TO CONSIDER
+  //ERRORS AND TEST FOR THEM. I CAN'T THINK OF ANY OTHER POTENTIAL ERRORS SO PUTTING THIS HERE (unless I were to also write a
+  //delete users, run it and then test for no users but I think the question would have said if we were supposed to write a
+  //delete users as well? let me know if I'm supposed to be adding that?)
+
+  test("GET:404 if path is invalid/mispelt", () => {
+    return request(app)
+      .get("/api/notUsers")
+      .expect(404)
+      .then((response) => {
+        expect(response.status).toBe(404);
+        expect(response.body.message).toBe("Not found!");
       });
   });
 });
