@@ -6,12 +6,14 @@ const {
   getComments,
   postComment,
   deleteComment,
-} = require("./controllers/commentsController.js");
+} = require("./controllers/commentsControllers.js");
 const {
   getArticlesById,
   getArticles,
   patchVotes,
 } = require("./controllers/articlesControllers.js");
+
+const getUsers = require("./controllers/usersController.js");
 
 const app = express();
 
@@ -33,6 +35,8 @@ app.get("/api/articles/:article_id", getArticlesById);
 app.get("/api/articles", getArticles);
 
 app.get("/api/articles/:article_id/comments", getComments);
+
+app.get("/api/users", getUsers);
 
 app.post("/api/articles/:article_id/comments", postComment);
 
@@ -77,14 +81,6 @@ app.use((err, req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  if (err.code === "ERR_HTTP_INVALID_STATUS_CODE") {
-    res.status(400).send({ message: "Bad Request" });
-  } else {
-    next(err);
-  }
-});
-
-app.use((err, req, res, next) => {
   if (err.code === "23503") {
     res.status(400).send({ message: "Bad Request - no user found" });
   } else {
@@ -109,3 +105,12 @@ app.use((err, req, res, next) => {
 });
 
 module.exports = app;
+
+//UNUSED BUT NOT DELETING IN CASE I NEED IT FOR SOMETHING, WILL DELETE IF UNUSED WHEN FINISHED
+// app.use((err, req, res, next) => {
+//   if (err.code === "ERR_HTTP_INVALID_STATUS_CODE") {
+//     res.status(400).send({ message: "Bad Request" });
+//   } else {
+//     next(err);
+//   }
+// });
