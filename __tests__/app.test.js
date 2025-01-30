@@ -340,3 +340,135 @@ describe("GET /api/users", () => {
       });
   });
 });
+
+describe("GET /api/articles WITH SORT AND ORDER", () => {
+  test(`200 responds with array of articles as previously, sorted by column title with default descending order`, () => {
+    return request(app)
+      .get("/api/articles?sort_by=title")
+      .expect(200)
+      .then((response) => {
+        const articles = response.body;
+        expect(Array.isArray(response.body));
+        expect(articles.length).toBe(5);
+        articles.forEach((article) => {
+          expect(typeof article.title).toBe("string");
+          expect(typeof article.author).toBe("string");
+          expect(typeof article.topic).toBe("string");
+          expect(typeof article.votes).toBe("number");
+          expect(typeof article.article_id).toBe("number");
+          expect(typeof article.article_img_url).toBe("string");
+          expect(article).toHaveProperty("comment_count");
+        });
+        expect(articles).toBeSortedBy("title", {
+          descending: true,
+        });
+      });
+  });
+  test(`200 works sorting by author with default descending order`, () => {
+    return request(app)
+      .get("/api/articles?sort_by=author")
+      .expect(200)
+      .then((response) => {
+        const articles = response.body;
+        expect(Array.isArray(response.body));
+        expect(articles.length).toBe(5);
+        expect(articles).toBeSortedBy("author", {
+          descending: true,
+        });
+      });
+  });
+  test(`200 works sorting by article_id with default descending order`, () => {
+    return request(app)
+      .get("/api/articles?sort_by=article_id")
+      .expect(200)
+      .then((response) => {
+        const articles = response.body;
+        expect(Array.isArray(response.body));
+        expect(articles).toBeSortedBy("article_id", {
+          descending: true,
+        });
+      });
+  });
+  test(`200 works sorting by topic with default descending order`, () => {
+    return request(app)
+      .get("/api/articles?sort_by=topic")
+      .expect(200)
+      .then((response) => {
+        const articles = response.body;
+        expect(Array.isArray(response.body));
+        expect(articles.length).toBe(5);
+        expect(articles).toBeSortedBy("topic", {
+          descending: true,
+        });
+      });
+  });
+  test(`200 works sorting by votes with default descending order`, () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes")
+      .expect(200)
+      .then((response) => {
+        const articles = response.body;
+        expect(Array.isArray(response.body));
+        expect(articles.length).toBe(5);
+        expect(articles).toBeSortedBy("votes", {
+          descending: true,
+        });
+      });
+  });
+  test(`200 works sorting by comment_count with default descending order`, () => {
+    return request(app)
+      .get("/api/articles?sort_by=comment_count")
+      .expect(200)
+      .then((response) => {
+        const articles = response.body;
+        expect(Array.isArray(response.body));
+        expect(articles.length).toBe(5);
+        expect(Number(articles[0].comment_count)).toBeGreaterThan(
+          Number(articles[4].comment_count)
+        );
+        //unsure how to do the number conversion in jest sorted or elsewhere
+      });
+  });
+  test(`200 works sorting with specified ascending order`, () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes&order=asc")
+      .expect(200)
+      .then((response) => {
+        const articles = response.body;
+        expect(Array.isArray(response.body));
+        expect(articles.length).toBe(5);
+        expect(articles).toBeSortedBy("votes", {
+          descending: false,
+        });
+      });
+  });
+  test(`200 works sorting with specified descending order`, () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes&order=desc")
+      .expect(200)
+      .then((response) => {
+        const articles = response.body;
+        expect(Array.isArray(response.body));
+        expect(articles.length).toBe(5);
+        expect(articles).toBeSortedBy("votes", {
+          descending: true,
+        });
+      });
+  });
+  test(`400 returns bad request when sort parameter is inavlid`, () => {
+    return request(app)
+      .get("/api/articles?sort_by=invalid_column_name&order=desc")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe("Bad Request");
+      });
+  });
+  test(`400 returns bad request when order parameter is inavlid`, () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes&order=invalid")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe("Bad Request");
+      });
+  });
+});
