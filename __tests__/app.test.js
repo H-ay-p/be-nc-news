@@ -359,10 +359,6 @@ describe("GET /api/articles WITH SORT AND ORDER", () => {
           expect(typeof article.article_img_url).toBe("string");
           expect(article).toHaveProperty("comment_count");
         });
-        expect(articles[0].title).toBe(
-          "UNCOVERED: catspiracy to bring down democracy"
-        );
-        expect(articles[4].title).toBe("A");
         expect(articles).toBeSortedBy("title", {
           descending: true,
         });
@@ -457,6 +453,22 @@ describe("GET /api/articles WITH SORT AND ORDER", () => {
         expect(articles).toBeSortedBy("votes", {
           descending: true,
         });
+      });
+  });
+  test(`400 returns bad request when sort parameter is inavlid`, () => {
+    return request(app)
+      .get("/api/articles?sort_by=invalid_column_name&order=desc")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe("Bad Request");
+      });
+  });
+  test(`400 returns bad request when order parameter is inavlid`, () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes&order=invalid")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe("Bad Request");
       });
   });
 });

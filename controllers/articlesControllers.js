@@ -22,10 +22,13 @@ const getArticlesById = (req, res, next) => {
 
 const getArticles = (req, res, next) => {
   const queries = req.query;
-  console.log(queries);
-  fetchArticles(queries).then((articles) => {
-    res.status(200).send(articles);
-  });
+  fetchArticles(queries)
+    .then((articles) => {
+      res.status(200).send(articles);
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 
 const patchVotes = (req, res, next) => {
