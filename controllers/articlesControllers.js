@@ -21,7 +21,9 @@ const getArticlesById = (req, res, next) => {
 };
 
 const getArticles = (req, res, next) => {
-  fetchArticles().then((articles) => {
+  const queries = req.query;
+  console.log(queries);
+  fetchArticles(queries).then((articles) => {
     res.status(200).send(articles);
   });
 };
