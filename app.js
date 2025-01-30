@@ -104,6 +104,14 @@ app.use((err, req, res, next) => {
   }
 });
 
+app.use((err, req, res, next) => {
+  if (err.message === "no articles to be found") {
+    res.status(404).send({ message: "no articles to be found :(" });
+  } else {
+    next(err);
+  }
+});
+
 module.exports = app;
 
 //UNUSED BUT NOT DELETING IN CASE I NEED IT FOR SOMETHING, WILL DELETE IF UNUSED WHEN FINISHED

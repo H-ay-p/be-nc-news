@@ -349,7 +349,7 @@ describe("GET /api/articles WITH SORT AND ORDER", () => {
       .then((response) => {
         const articles = response.body;
         expect(Array.isArray(response.body));
-        expect(articles.length).toBe(5);
+        expect(articles.length).toBe(13);
         articles.forEach((article) => {
           expect(typeof article.title).toBe("string");
           expect(typeof article.author).toBe("string");
@@ -371,7 +371,7 @@ describe("GET /api/articles WITH SORT AND ORDER", () => {
       .then((response) => {
         const articles = response.body;
         expect(Array.isArray(response.body));
-        expect(articles.length).toBe(5);
+        expect(articles.length).toBe(13);
         expect(articles).toBeSortedBy("author", {
           descending: true,
         });
@@ -396,7 +396,7 @@ describe("GET /api/articles WITH SORT AND ORDER", () => {
       .then((response) => {
         const articles = response.body;
         expect(Array.isArray(response.body));
-        expect(articles.length).toBe(5);
+        expect(articles.length).toBe(13);
         expect(articles).toBeSortedBy("topic", {
           descending: true,
         });
@@ -409,7 +409,7 @@ describe("GET /api/articles WITH SORT AND ORDER", () => {
       .then((response) => {
         const articles = response.body;
         expect(Array.isArray(response.body));
-        expect(articles.length).toBe(5);
+        expect(articles.length).toBe(13);
         expect(articles).toBeSortedBy("votes", {
           descending: true,
         });
@@ -422,7 +422,7 @@ describe("GET /api/articles WITH SORT AND ORDER", () => {
       .then((response) => {
         const articles = response.body;
         expect(Array.isArray(response.body));
-        expect(articles.length).toBe(5);
+        expect(articles.length).toBe(13);
         expect(Number(articles[0].comment_count)).toBeGreaterThan(
           Number(articles[4].comment_count)
         );
@@ -436,7 +436,7 @@ describe("GET /api/articles WITH SORT AND ORDER", () => {
       .then((response) => {
         const articles = response.body;
         expect(Array.isArray(response.body));
-        expect(articles.length).toBe(5);
+        expect(articles.length).toBe(13);
         expect(articles).toBeSortedBy("votes", {
           descending: false,
         });
@@ -449,7 +449,7 @@ describe("GET /api/articles WITH SORT AND ORDER", () => {
       .then((response) => {
         const articles = response.body;
         expect(Array.isArray(response.body));
-        expect(articles.length).toBe(5);
+        expect(articles.length).toBe(13);
         expect(articles).toBeSortedBy("votes", {
           descending: true,
         });
@@ -469,6 +469,42 @@ describe("GET /api/articles WITH SORT AND ORDER", () => {
       .expect(400)
       .then((response) => {
         expect(response.body.message).toBe("Bad Request");
+      });
+  });
+});
+
+describe("GET /api/articles WITH TOPIC QUERY", () => {
+  test(`200 filters the articles by the topic value specified in the query.`, () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then((response) => {
+        const articles = response.body;
+        expect(Array.isArray(articles));
+        expect(articles.length).toBe(12);
+        articles.forEach((article) => {
+          expect(article.topic).toBe("mitch");
+        });
+      });
+  });
+  test(`200 still returns all articles if no topic specified`, () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then((response) => {
+        const articles = response.body;
+        expect(Array.isArray(articles));
+        expect(articles.length).toBe(13);
+      });
+  });
+  //CONSIDERED TESTING FOR "INVALID TOPIC" BUT ANYTHING COULD BE THE TOPIC OF AN ARTICLE,
+  //EVEN A NUMBER OR A TYPE OF PUNCTUATION. SO LEFT IT AT THIS. WILL EDIT IF NEEDED.
+  test(`404 sad message if no topics`, () => {
+    return request(app)
+      .get("/api/articles?topic=mushrooms")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.message).toBe("no articles to be found :(");
       });
   });
 });
