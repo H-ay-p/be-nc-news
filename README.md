@@ -1,16 +1,16 @@
 # Northcoders News API
 
-<!-- A summary of what the project is.
-Clear instructions of how to clone, install dependencies, seed local database, and run tests.
-Information about how to create the two .env files. -->
+Link: https://nc-news-3wsj.onrender.com/api/
 
-The minimum versions of Node.js, and Postgres needed to run the project.
+Developed using node.js v22.9.0 and PostgreSQL 14.15 on Ubuntu.
 
 This is an nc_news api where one can view articles, view comments and post comments.
 
-To clone, please fork the repo and then type "git clone " followed by the http link in the terminal.
+To clone, please fork the repo and then type "git clone " followed by the http link in your terminal. Then you can push any changes to your own version of the repo.
 
 You will need .env files - Create two .env files (.env.test and .env.development). In each one, insert "PGDATABASE=" followed by the relevant database name (found in setup.sql).
+
+Details of dependencies can be found in the package.json. After installing them, run npm setup-db to start the database and npm seed to seed it. Then run "npm test" to run the test files.
 
 Summary of endpoints:
 
