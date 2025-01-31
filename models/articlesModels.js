@@ -27,9 +27,14 @@ const fetchArticles = (queries) => {
 
   if (topic) {
     //THIS LOOKS MESSY BUT WHEN I TRIED TO STICK THEM ALL TOGETHER IT IGNORED ALL THE WORDS EXCEPT MITCH
-    SQLString += ` WHERE `;
-    SQLString += `articles.topic = `;
-    SQLString += `'` + (`$1;`, [topic]) + `'`;
+    const availableTopics = ["mitch", "cats", "paper"];
+    if (availableTopics.includes(topic)) {
+      SQLString += ` WHERE `;
+      SQLString += `articles.topic = `;
+      SQLString += `'` + (`$1;`, [topic]) + `'`;
+    } else {
+      return Promise.reject({ message: "topic not available :(" });
+    }
   }
 
   SQLString += ` GROUP BY
@@ -65,12 +70,18 @@ const fetchArticles = (queries) => {
   }
 
   return db.query(SQLString).then((response) => {
-    if (response.rows.length === 0) {
-      return Promise.reject({ message: "no articles to be found" });
-    } else {
-      return response.rows;
-    }
+    return response.rows;
   });
+
+  // return db.query(SQLString).then((response) => {
+  //   if (response.rows.length === 0) {
+  //     console.log(response);
+  //     console.log("in here");
+  //     return Promise.reject({ message: "no articles to be found" });
+  //   } else {
+  //     return response.rows;
+  //   }
+  // });
 };
 
 const updateVotes = (voteInc, id) => {
