@@ -78,13 +78,13 @@ describe("GET /api/articles/:article_id", () => {
         expect(response.body).toHaveProperty("article_img_url");
       });
   });
-  test.only("200: as above with addition of comment_count property", () => {
+  test("200: as above with addition of comment_count property", () => {
     return request(app)
       .get("/api/articles/4")
       .expect(200)
       .then((response) => {
         expect(response.status).toBe(200);
-        expect(response.body.comment_count).toBe("0");
+        expect(response.body.comment_count).toBe(0);
       });
   });
   test("404 when there is no article with given id", () => {
@@ -464,7 +464,7 @@ describe("GET /api/articles WITH SORT AND ORDER", () => {
         });
       });
   });
-  test.only(`200 works sorting with specified order when no sort`, () => {
+  test(`200 works sorting with specified order when no sort`, () => {
     return request(app)
       .get("/api/articles?order=desc")
       .expect(200)
@@ -541,40 +541,3 @@ describe("GET /api/articles WITH TOPIC QUERY", () => {
       });
   });
 });
-
-// describe("GET /api/articles/:article_id", () => {
-//   test("200: as above with addition of comment_count property", () => {
-//     return request(app)
-//       .get("/api/articles/4")
-//       .expect(200)
-//       .then((response) => {
-//         expect(response.status).toBe(200);
-//         expect(response.body).toHaveProperty("title");
-//         expect(response.body).toHaveProperty("votes");
-//         expect(response.body).toHaveProperty("author");
-//         expect(response.body).toHaveProperty("article_id");
-//         expect(response.body).toHaveProperty("body");
-//         expect(response.body).toHaveProperty("topic");
-//         expect(response.body).toHaveProperty("article_img_url");
-//         expect(response.body).toHaveProperty("comment_count");
-//       });
-//   });
-//   test("404 when there is no article with given id", () => {
-//     return request(app)
-//       .get("/api/articles/3409")
-//       .expect(404)
-//       .then((response) => {
-//         expect(response.status).toBe(404);
-//         expect(response.body.message).toBe("article not found");
-//       });
-//   });
-//   test("400 when the provided id is not a valid id", () => {
-//     return request(app)
-//       .get("/api/articles/ImNotAnId")
-//       .expect(400)
-//       .then((response) => {
-//         expect(response.status).toBe(400);
-//         expect(response.body.message).toBe("Bad Request");
-//       });
-//   });
-// });

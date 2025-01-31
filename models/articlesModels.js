@@ -4,7 +4,7 @@ const fetchArticleById = (id) => {
   return db
     .query(
       `SELECT articles.author, articles.title, articles.article_id, articles.body, articles.topic, articles.created_at, articles.votes,
-    articles.article_img_url, COUNT (comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON 
+    articles.article_img_url, CAST(COUNT (comments.article_id) AS INT) AS comment_count FROM articles LEFT JOIN comments ON 
     articles.article_id = comments.article_id GROUP BY articles.article_id HAVING articles.article_id=$1`,
       [id]
     )
@@ -23,10 +23,9 @@ const fetchArticles = (queries) => {
   const topic = queries.topic;
 
   let SQLString = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes,
-    articles.article_img_url, COUNT (comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id`;
+    articles.article_img_url, CAST(COUNT (comments.article_id) AS INT) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id`;
 
   if (topic) {
-    //THIS LOOKS MESSY BUT WHEN I TRIED TO STICK THEM ALL TOGETHER IT IGNORED ALL THE WORDS EXCEPT MITCH
     const availableTopics = ["mitch", "cats", "paper"];
     if (availableTopics.includes(topic)) {
       SQLString += ` WHERE `;
@@ -72,16 +71,6 @@ const fetchArticles = (queries) => {
   return db.query(SQLString).then((response) => {
     return response.rows;
   });
-
-  // return db.query(SQLString).then((response) => {
-  //   if (response.rows.length === 0) {
-  //     console.log(response);
-  //     console.log("in here");
-  //     return Promise.reject({ message: "no articles to be found" });
-  //   } else {
-  //     return response.rows;
-  //   }
-  // });
 };
 
 const updateVotes = (voteInc, id) => {
