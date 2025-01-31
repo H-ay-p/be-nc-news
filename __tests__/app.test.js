@@ -455,6 +455,19 @@ describe("GET /api/articles WITH SORT AND ORDER", () => {
         });
       });
   });
+  test.only(`200 works sorting with specified order when no sort`, () => {
+    return request(app)
+      .get("/api/articles?order=desc")
+      .expect(200)
+      .then((response) => {
+        const articles = response.body;
+        expect(Array.isArray(response.body));
+        expect(articles.length).toBe(13);
+        expect(articles).toBeSorted({
+          descending: true,
+        });
+      });
+  });
   test(`400 returns bad request when sort parameter is inavlid`, () => {
     return request(app)
       .get("/api/articles?sort_by=invalid_column_name&order=desc")
