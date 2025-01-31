@@ -57,7 +57,7 @@ app.use((err, req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  if (err.code === "22P02") {
+  if (err.code === "22P02" || err.code === "23502") {
     res.status(400).send({ message: "Bad Request" });
   } else {
     next(err);
@@ -67,14 +67,6 @@ app.use((err, req, res, next) => {
 app.use((err, req, res, next) => {
   if (err.message === "no comments :(") {
     res.status(404).send({ message: "no comments :(" });
-  } else {
-    next(err);
-  }
-});
-
-app.use((err, req, res, next) => {
-  if (err.code === "23502") {
-    res.status(400).send({ message: "Bad Request" });
   } else {
     next(err);
   }
@@ -105,8 +97,8 @@ app.use((err, req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  if (err.message === "no articles to be found") {
-    res.status(404).send({ message: "no articles to be found :(" });
+  if (err.message === "topic not available :(") {
+    res.status(404).send({ message: "topic not available :(" });
   } else {
     next(err);
   }

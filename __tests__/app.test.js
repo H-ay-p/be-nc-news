@@ -497,14 +497,25 @@ describe("GET /api/articles WITH TOPIC QUERY", () => {
         expect(articles.length).toBe(13);
       });
   });
+  test(`200 returns empty array if no articles for this topic`, () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then((response) => {
+        const articles = response.body;
+        expect(Array.isArray(articles));
+        expect(articles.length).toBe(0);
+        expect(articles).toEqual([]);
+      });
+  });
   //CONSIDERED TESTING FOR "INVALID TOPIC" BUT ANYTHING COULD BE THE TOPIC OF AN ARTICLE,
   //EVEN A NUMBER OR A TYPE OF PUNCTUATION. SO LEFT IT AT THIS. WILL EDIT IF NEEDED.
-  test(`404 sad message if no topics`, () => {
+  test(`404 sad message if topic does not exist`, () => {
     return request(app)
       .get("/api/articles?topic=mushrooms")
       .expect(404)
       .then((response) => {
-        expect(response.body.message).toBe("no articles to be found :(");
+        expect(response.body.message).toBe("topic not available :(");
       });
   });
 });
