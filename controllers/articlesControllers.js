@@ -10,7 +10,7 @@ const getArticlesById = (req, res, next) => {
   if (typeof Number(article_id) === "number") {
     fetchArticleById(article_id)
       .then((article) => {
-        res.status(200).send(article);
+        res.status(200).send(article[0]);
       })
       .catch((err) => {
         next(err);

@@ -1,25 +1,37 @@
 # Northcoders News API
 
-1. .env - Create two .env files (.env.test and .env.development). In each one, insert "PGDATABASE=" followed by the relevant database name (found in setup.qsql).
+<!-- A summary of what the project is.
+Clear instructions of how to clone, install dependencies, seed local database, and run tests.
+Information about how to create the two .env files. -->
 
-FOR FURTHER DETAIL ON ENDPOINTS SEE ENDPOINTS.JSON
+The minimum versions of Node.js, and Postgres needed to run the project.
 
-2. GET /api endpoint - shows the endpoints, each with a short description.
+This is an nc_news api where one can view articles, view comments and post comments.
 
-3. GET /api/topics endpoint - returns an array of topics
+To clone, please fork the repo and then type "git clone " followed by the http link in the terminal.
 
-4. GET /api/articles/:article_id - returns an article object with the specified id
+You will need .env files - Create two .env files (.env.test and .env.development). In each one, insert "PGDATABASE=" followed by the relevant database name (found in setup.sql).
 
-5. GET /api/articles - returns an array of all articles
+Summary of endpoints:
 
-6. GET /api/articles/:article_id/comments - returns comments for given article
+(for further detail please see the endpoints.json)
 
-7. POST /api/articles/:article_id/comments - posts a new comment
+GET /api endpoint - shows the endpoints, each with a short description.
 
-8. PATCH /api/articles/:article_id - updates the number of votes for an article
+GET /api/topics endpoint - returns an array of topics
 
-9. DELETE /api/comments/:comment_id - deletes a comment with specified id (if comment exists)
+GET /api/articles/:article_id - returns an article object with the specified id
 
-10. GET /api/users - returns an array of users
+GET /api/articles - returns an array of all articles
+
+GET /api/articles/:article_id/comments - returns comments for given article
+
+POST /api/articles/:article_id/comments - posts a new comment
+
+PATCH /api/articles/:article_id - updates the number of votes for an article
+
+DELETE /api/comments/:comment_id - deletes a comment with specified id (if comment exists)
+
+GET /api/users - returns an array of users
 
 This portfolio project was created as part of a Digital Skills Bootcamp in Software Engineering provided by [Northcoders](https://northcoders.com/)
