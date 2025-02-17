@@ -4,7 +4,7 @@ const fetchArticleById = (id) => {
   return db
     .query(
       `SELECT articles.author, articles.title, articles.article_id, articles.body, articles.topic, articles.created_at, articles.votes,
-    articles.article_img_url, COUNT (comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON 
+    articles.article_img_url, CAST(COUNT (comments.article_id) AS INT) AS comment_count FROM articles LEFT JOIN comments ON 
     articles.article_id = comments.article_id GROUP BY articles.article_id HAVING articles.article_id=$1`,
       [id]
     )
@@ -18,23 +18,15 @@ const fetchArticleById = (id) => {
 };
 
 const fetchArticles = (queries) => {
-  const sort_by = queries.sort_by;
-  const order = queries.order;
-  const topic = queries.topic;
+  const { sort_by, order, topic } = queries;
 
   let SQLString = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes,
-    articles.article_img_url, COUNT (comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id`;
+    articles.article_img_url, CAST(COUNT (comments.article_id) AS INT) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id`;
+  let queryParams = [];
 
   if (topic) {
-    //THIS LOOKS MESSY BUT WHEN I TRIED TO STICK THEM ALL TOGETHER IT IGNORED ALL THE WORDS EXCEPT MITCH
-    const availableTopics = ["mitch", "cats", "paper"];
-    if (availableTopics.includes(topic)) {
-      SQLString += ` WHERE `;
-      SQLString += `articles.topic = `;
-      SQLString += `'` + (`$1;`, [topic]) + `'`;
-    } else {
-      return Promise.reject({ message: "topic not available :(" });
-    }
+    SQLString += ` WHERE articles.topic=$1`;
+    queryParams.push(topic);
   }
 
   SQLString += ` GROUP BY
@@ -69,19 +61,12 @@ const fetchArticles = (queries) => {
     SQLString += ` DESC`;
   }
 
-  return db.query(SQLString).then((response) => {
+  return db.query(SQLString, queryParams).then((response) => {
+    if (topic && response.rows.length === 0) {
+      return Promise.reject({ message: "topic not available :(" });
+    }
     return response.rows;
   });
-
-  // return db.query(SQLString).then((response) => {
-  //   if (response.rows.length === 0) {
-  //     console.log(response);
-  //     console.log("in here");
-  //     return Promise.reject({ message: "no articles to be found" });
-  //   } else {
-  //     return response.rows;
-  //   }
-  // });
 };
 
 const updateVotes = (voteInc, id) => {
