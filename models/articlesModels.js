@@ -18,47 +18,16 @@ const fetchArticleById = (id) => {
 };
 
 const fetchArticles = (queries) => {
-  const sort_by = queries.sort_by;
-  const order = queries.order;
-  const topic = queries.topic;
+  const { sort_by, order, topic } = queries;
 
   let SQLString = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes,
     articles.article_img_url, CAST(COUNT (comments.article_id) AS INT) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id`;
+  let queryParams = [];
 
   if (topic) {
-    // let availableTopics = [];
-    // db.query("SELECT slug FROM topics").then((response) => {
-    //   response.rows.forEach((item) => {
-    //     availableTopics.push(item.slug);
-    //     console.log(availableTopics);
-    //   });
-    // });
-
-    // console.log(availableTopics, "on 37");
-
-    // if (availableTopics.includes(topic)) {
-    //   SQLString += ` WHERE `;
-    //   SQLString += `articles.topic = `;
-    //   SQLString += `'` + (`$1;`, [topic]) + `'`;
-    // } else {
-    //   return Promise.reject({ message: "topic not available :(" });
-    // }
-
-    // "SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes,
-    //  articles.article_img_url, CAST(COUNT (comments.article_id) AS INT) AS comment_count FROM articles LEFT JOIN comments
-    // ON articles.article_id = comments.article_id WHERE articles.topic = 'mitch'"
-
-    const availableTopics = ["mitch", "cats", "paper"];
-
-    if (availableTopics.includes(topic)) {
-      SQLString += ` WHERE `;
-      SQLString += `articles.topic = `;
-      SQLString += `'` + (`$1;`, [topic]) + `'`;
-    } else {
-      return Promise.reject({ message: "topic not available :(" });
-    }
+    SQLString += ` WHERE articles.topic=$1`;
+    queryParams.push(topic);
   }
-  // console.log(SQLString);
 
   SQLString += ` GROUP BY
     (articles.article_id) ORDER BY `;
@@ -92,7 +61,11 @@ const fetchArticles = (queries) => {
     SQLString += ` DESC`;
   }
 
-  return db.query(SQLString).then((response) => {
+  return db.query(SQLString, queryParams).then((response) => {
+    if (topic && response.rows.length === 0) {
+      console.log(response);
+      return Promise.reject({ message: "topic not available :(" });
+    }
     return response.rows;
   });
 };

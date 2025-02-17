@@ -22,6 +22,9 @@ const getArticlesById = (req, res, next) => {
 
 const getArticles = (req, res, next) => {
   const queries = req.query;
+
+  //get topic by ID, if fails will reject into error (topic doesn't exist)
+  //return fetch articles with result
   fetchArticles(queries)
     .then((articles) => {
       res.status(200).send(articles);
