@@ -63,7 +63,6 @@ const fetchArticles = (queries) => {
 
   return db.query(SQLString, queryParams).then((response) => {
     if (topic && response.rows.length === 0) {
-      console.log(response);
       return Promise.reject({ message: "topic not available :(" });
     }
     return response.rows;
