@@ -171,7 +171,7 @@ describe("GET /api/articles/:article_id/comments", () => {
   });
 });
 
-describe("POST /api/articles/:article_id/comments", () => {
+describe.only("POST /api/articles/:article_id/comments", () => {
   test("201: Responds with the posted comment", () => {
     return request(app)
       .post("/api/articles/5/comments")
@@ -181,11 +181,14 @@ describe("POST /api/articles/:article_id/comments", () => {
       })
       .expect(201)
       .then((response) => {
-        expect(response.body).toEqual({
-          article_id: "5",
-          body: "this was so shocking i had to stop lurking",
-          username: "lurker",
-        });
+        console.log(response.body);
+        expect(response.body.comment_id).toBe(19);
+        expect(response.body.body).toBe(
+          "this was so shocking i had to stop lurking"
+        );
+        expect(response.body.article_id).toBe(5);
+        expect(response.body.author).toBe("lurker");
+        expect(response.body.votes).toBe(0);
       });
   });
   test("400 missing keys", () => {

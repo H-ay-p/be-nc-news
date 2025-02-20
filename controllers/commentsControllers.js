@@ -20,8 +20,8 @@ const postComment = (req, res, next) => {
   const article_id = req.params.article_id;
 
   addComment(newComment, article_id)
-    .then(() => {
-      res.status(201).send(newComment);
+    .then((response) => {
+      res.status(201).send(response);
     })
     .catch((err) => {
       if (
