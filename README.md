@@ -6,7 +6,7 @@ Developed using node.js v22.9.0 and PostgreSQL 14.15 on Ubuntu.
 
 This is an nc_news api where one can view articles, view comments and post comments.
 
-To clone, please fork the repo and then type "git clone " followed by the http link in your terminal. Then you can push any changes to your own version of the repo.
+To clone, please fork the repo and then type "git clone " followed by the http link in your terminal. Run "npm i" to install dependencies. 
 
 You will need .env files - Create two .env files (.env.test and .env.development). In each one, insert "PGDATABASE=" followed by the relevant database name (found in setup.sql).
 
