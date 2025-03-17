@@ -1,4 +1,4 @@
-# Northcoders News API
+# NC News API
 
 Link: https://nc-news-3wsj.onrender.com/api/
 
