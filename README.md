@@ -12,6 +12,7 @@ You will need .env files - Create two .env files (.env.test and .env.development
 
 Details of dependencies can be found in the package.json. After installing them, run npm setup-db to start the database and npm seed to seed it. Then run "npm test" to run the test files.
 
+
 Summary of endpoints:
 
 (for further detail please see the endpoints.json)
