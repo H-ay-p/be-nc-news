@@ -171,7 +171,7 @@ describe("GET /api/articles/:article_id/comments", () => {
   });
 });
 
-describe.only("POST /api/articles/:article_id/comments", () => {
+describe("POST /api/articles/:article_id/comments", () => {
   test("201: Responds with the posted comment", () => {
     return request(app)
       .post("/api/articles/5/comments")
@@ -181,7 +181,6 @@ describe.only("POST /api/articles/:article_id/comments", () => {
       })
       .expect(201)
       .then((response) => {
-        console.log(response.body);
         expect(response.body.comment_id).toBe(19);
         expect(response.body.body).toBe(
           "this was so shocking i had to stop lurking"
@@ -478,6 +477,15 @@ describe("GET /api/articles WITH SORT AND ORDER", () => {
         expect(articles).toBeSorted({
           descending: true,
         });
+      });
+  });
+  test(`200 works sorting with specified sort and topic filter`, () => {
+    return request(app)
+      .get("/api/articles?topic=mitch&sort_by=votes")
+      .expect(200)
+      .then((response) => {
+        console.log(response.body);
+        const articles = response.body;
       });
   });
   test(`400 returns bad request when sort parameter is inavlid`, () => {
