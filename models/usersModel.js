@@ -6,4 +6,12 @@ const fetchUsers = () => {
   });
 };
 
+const fetchUserByUsername = (username) => {
+  return db
+    .query("SELECT * from users where username = $1", username)
+    .then((response) => {
+      return response.rows;
+    });
+};
+
 module.exports = fetchUsers;
